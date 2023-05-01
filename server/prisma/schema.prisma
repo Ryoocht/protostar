@@ -6,6 +6,54 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+model Student {
+  id        String @id @default(uuid()) @map("_id")
+  firstName String
+  lastName  String
+  email     String @unique @map("email")
+  avatar    String
+  password  String
+
+  profile Profile?
+
+  @@map("students")
+}
+
+model Tutor {
+  id        String   @id @default(uuid()) @map("_id")
+  firstName String
+  lastName  String
+  email     String   @unique @map("email")
+  avatar    String
+  password  String
+  Profile   Profile?
+
+  @@map("tutors")
+}
+
+model Profile {
+  id              String @id @default(uuid()) @map("_id")
+  bio             String
+  subject         String
+  experience      String
+  primaryLanguage String
+
+  studentId String?  @unique
+  student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  tutorId   String?  @unique
+  tutor     Tutor?   @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+model Language {
+  id    String  @id @default(uuid()) @map("_id")
+  title String  @unique
+  icon  String?
+}
+
+// make 3 joint tables for StudentLearningLanguages, StudentAquiredLanguages and TutorLanguages
