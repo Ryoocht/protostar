@@ -18,19 +18,25 @@ model Student {
   avatar    String
   password  String
 
-  profile Profile?
+  profile       Profile?
+  Address       Address?
+  addressId     String
+  bookedLessons StudentsInLessons[]
 
   @@map("students")
 }
 
 model Tutor {
-  id        String   @id @default(uuid()) @map("_id")
-  firstName String
-  lastName  String
-  email     String   @unique @map("email")
-  avatar    String
-  password  String
-  Profile   Profile?
+  id                String              @id @default(uuid()) @map("_id")
+  firstName         String
+  lastName          String
+  email             String              @unique @map("email")
+  avatar            String
+  password          String
+  profile           Profile?
+  address           Address?
+  tutorAvailability TutorAvailability[]
+  lessons           Lesson[]
 
   @@map("tutors")
 }
@@ -47,13 +53,109 @@ model Profile {
   tutorId   String?  @unique
   tutor     Tutor?   @relation(fields: [tutorId], references: [id], onDelete: Cascade)
 
+  StudentLearningLanguages StudentLearningLanguages[]
+  StudentAquiredLanguages  StudentAquiredLanguages[]
+  TutorLanguages           TutorLanguages[]
+
   @@map("profiles")
 }
 
 model Language {
-  id    String  @id @default(uuid()) @map("_id")
-  title String  @unique
-  icon  String?
+  id                       String                     @id @default(uuid()) @map("_id")
+  title                    String                     @unique
+  icon                     String?
+  StudentLearningLanguages StudentLearningLanguages[]
+  StudentAquiredLanguages  StudentAquiredLanguages[]
+  TutorLanguages           TutorLanguages[]
 }
 
-// make 3 joint tables for StudentLearningLanguages, StudentAquiredLanguages and TutorLanguages
+model StudentLearningLanguages {
+  id         String   @id @default(uuid()) @map("_id")
+  profileId  String   @unique
+  profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  languageId String   @unique
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, languageId])
+}
+
+model StudentAquiredLanguages {
+  id         String   @id @default(uuid()) @map("_id")
+  profileId  String   @unique
+  profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  languageId String   @unique
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, languageId])
+}
+
+model TutorLanguages {
+  id         String   @id @default(uuid()) @map("_id")
+  profileId  String   @unique
+  profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  languageId String   @unique
+  language   Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, languageId])
+}
+
+model Address {
+  id           String @id @default(uuid()) @map("_id")
+  fullAddress  String
+  streetNumber String
+  streetName   String
+  suburb       String
+  state        String
+  country      String
+  postcode     String
+
+  studentId String  @unique
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  tutorId   String  @unique
+  Tutor     Tutor   @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+model Lesson {
+  id        String     @id @default(uuid()) @map("_id")
+  type      LessonType
+  dayOfWeek Int
+  startTime DateTime
+  endTime   DateTime
+  capacity  Int
+  price     Int
+
+  tutuorId       String              @unique
+  tutor          Tutor               @relation(fields: [tutuorId], references: [id], onDelete: Cascade)
+  bookedStudents StudentsInLessons[]
+
+  @@map("lessons")
+}
+
+model StudentsInLessons {
+  id        String  @id @default(uuid()) @map("_id")
+  studentId String  @unique
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  lessonId  String  @unique
+  lesson    Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("students_lessons")
+}
+
+model TutorAvailability {
+  id        String   @id @default(uuid()) @map("_id")
+  dayOfWeek Int
+  startTime DateTime
+  endTime   DateTime
+
+  tutorId String @unique
+  tutor   Tutor  @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+
+  @@map("tutor_availabilities")
+}
+
+enum LessonType {
+  CLASS
+  ONE_ON_ONE
+}
