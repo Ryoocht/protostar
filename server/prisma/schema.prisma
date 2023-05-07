@@ -6,12 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model Student {
-  id        String @id @default(uuid()) @map("_id")
+  id        String @id @default(uuid()) @map("id")
   firstName String
   lastName  String
   email     String @unique @map("email")
@@ -27,7 +27,7 @@ model Student {
 }
 
 model Tutor {
-  id                String              @id @default(uuid()) @map("_id")
+  id                String              @id @default(uuid()) @map("id")
   firstName         String
   lastName          String
   email             String              @unique @map("email")
@@ -42,7 +42,7 @@ model Tutor {
 }
 
 model Profile {
-  id              String @id @default(uuid()) @map("_id")
+  id              String @id @default(uuid()) @map("id")
   bio             String
   subject         String
   experience      String
@@ -61,7 +61,7 @@ model Profile {
 }
 
 model Language {
-  id                       String                     @id @default(uuid()) @map("_id")
+  id                       String                     @id @default(uuid()) @map("id")
   title                    String                     @unique
   icon                     String?
   StudentLearningLanguages StudentLearningLanguages[]
@@ -70,7 +70,7 @@ model Language {
 }
 
 model StudentLearningLanguages {
-  id         String   @id @default(uuid()) @map("_id")
+  id         String   @id @default(uuid()) @map("id")
   profileId  String   @unique
   profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   languageId String   @unique
@@ -80,7 +80,7 @@ model StudentLearningLanguages {
 }
 
 model StudentAquiredLanguages {
-  id         String   @id @default(uuid()) @map("_id")
+  id         String   @id @default(uuid()) @map("id")
   profileId  String   @unique
   profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   languageId String   @unique
@@ -90,7 +90,7 @@ model StudentAquiredLanguages {
 }
 
 model TutorLanguages {
-  id         String   @id @default(uuid()) @map("_id")
+  id         String   @id @default(uuid()) @map("id")
   profileId  String   @unique
   profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   languageId String   @unique
@@ -100,7 +100,7 @@ model TutorLanguages {
 }
 
 model Address {
-  id           String @id @default(uuid()) @map("_id")
+  id           String @id @default(uuid()) @map("id")
   fullAddress  String
   streetNumber String
   streetName   String
@@ -118,7 +118,7 @@ model Address {
 }
 
 model Lesson {
-  id        String     @id @default(uuid()) @map("_id")
+  id        String     @id @default(uuid()) @map("id")
   type      LessonType
   dayOfWeek Int
   startTime DateTime
@@ -134,7 +134,7 @@ model Lesson {
 }
 
 model StudentsInLessons {
-  id        String  @id @default(uuid()) @map("_id")
+  id        String  @id @default(uuid()) @map("id")
   studentId String  @unique
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
   lessonId  String  @unique
@@ -144,7 +144,7 @@ model StudentsInLessons {
 }
 
 model TutorAvailability {
-  id        String   @id @default(uuid()) @map("_id")
+  id        String   @id @default(uuid()) @map("id")
   dayOfWeek Int
   startTime DateTime
   endTime   DateTime
