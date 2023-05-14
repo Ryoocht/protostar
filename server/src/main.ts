@@ -1,20 +1,18 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { ApiConfigService } from './utils/api-config-service'
+import { ConfigService } from '@nestjs/config'
+import OpenApi from './open-api'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  const configService = app.get(ConfigService)
+  const apiConfigService = new ApiConfigService(configService)
 
-  const config = new DocumentBuilder()
-  .setTitle('Protostar API')
-  .setDescription('Protostar Backend API documentation.')
-  .setVersion('1.0.0')
-  .addTag('Protostar')
-  .build()
+  app.setGlobalPrefix('api/v1')
 
-  const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('swagger', app, document)
+  await new OpenApi(apiConfigService).handler(app)
 
-  await app.listen(3000)
+  await app.listen(apiConfigService.applicationPort)
 }
 bootstrap()
