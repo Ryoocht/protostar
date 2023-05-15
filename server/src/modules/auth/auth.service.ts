@@ -1,26 +1,41 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { CreateAuthDto } from './dto/create-auth.dto'
+import { UpdateAuthDto } from './dto/update-auth.dto'
+import GenericService from 'src/utils/generic-service'
+import { StudentService } from '../student/student.service'
+import { TeacherService } from '../teacher/teacher.service'
+import { StudentLoginDto } from '../student/dto/student-login.dto'
+import HashService from 'src/utils/hash-service'
 
 @Injectable()
-export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+export class AuthService extends GenericService {
+  constructor(
+    private readonly studentService: StudentService,
+    private readonly teacherService: TeacherService
+  ) {
+    super()
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async studentLogin(studentLoginDto: StudentLoginDto) {
+    try {
+      const student = await this.studentService.findOneByEmail(
+        studentLoginDto.email
+      )
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+      const isValidPassword = await HashService.compare(
+        studentLoginDto.password,
+        student.password
+      )
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+      if (!isValidPassword)
+        throw new BadRequestException('Invalid email or password')
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+      const { password, ...studentDetails } = student
+      return {
+        details: studentDetails,
+      }
+    } catch (error) {
+      throw error
+    }
   }
 }
