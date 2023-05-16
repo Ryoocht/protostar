@@ -5,8 +5,8 @@ import { UpdateAuthDto } from './dto/update-auth.dto'
 import { ApiTags } from '@nestjs/swagger'
 import { StudentLoginDto } from '../student/dto/student-login.dto'
 import { StudentService } from '../student/student.service'
-import { TeacherService } from '../teacher/teacher.service'
-import { TeacherLoginDto } from '../teacher/dto/teacher-login.dto'
+import { TutorService } from '../tutor/tutor.service'
+import { TutorLoginDto } from '../tutor/dto/tutor-login.dto'
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -14,7 +14,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly studentService: StudentService,
-    private readonly teacherService: TeacherService
+    private readonly tutorService: TutorService
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -23,5 +23,5 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('teacher/login')
-  teacherLogin(@Body() teacherLoginDto: TeacherLoginDto) {}
+  teacherLogin(@Body() tutorLoginDto: TutorLoginDto) {}
 }
