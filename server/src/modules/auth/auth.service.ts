@@ -6,6 +6,7 @@ import { StudentService } from '../student/student.service'
 import { TutorService } from '../tutor/tutor.service'
 import { StudentLoginDto } from '../student/dto/student-login.dto'
 import { TutorLoginDto } from '../tutor/dto/tutor-login.dto'
+import { CreateStudentDto } from '../student/dto/create-student.dto'
 
 @Injectable()
 export class AuthService extends GenericService {
@@ -60,4 +61,6 @@ export class AuthService extends GenericService {
       throw error
     }
   }
+
+  async studentRegister(createStudentDto: CreateStudentDto) {}
 }
