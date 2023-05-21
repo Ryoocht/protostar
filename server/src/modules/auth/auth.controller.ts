@@ -19,9 +19,13 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('student/login')
-  studentLogin(@Body() studentLoginDto: StudentLoginDto) {}
+  studentLogin(@Body() studentLoginDto: StudentLoginDto) {
+    return this.authService.studentLogin(studentLoginDto)
+  }
 
   @HttpCode(HttpStatus.OK)
   @Post('teacher/login')
-  teacherLogin(@Body() tutorLoginDto: TutorLoginDto) {}
+  teacherLogin(@Body() tutorLoginDto: TutorLoginDto) {
+    return this.authService.teacherLogin(tutorLoginDto)
+  }
 }
