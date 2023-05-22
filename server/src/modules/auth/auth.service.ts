@@ -62,5 +62,9 @@ export class AuthService extends GenericService {
     }
   }
 
-  async studentRegister(createStudentDto: CreateStudentDto) {}
+  async studentRegister(createStudentDto: CreateStudentDto) {
+    return await this.prisma.$transaction(async (tx) => {
+      //const {password, ...studentDetails} = await this.studentService
+    })
+  }
 }

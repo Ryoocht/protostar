@@ -100,14 +100,17 @@ model TutorLanguages {
 }
 
 model Address {
-  id           String @id @default(uuid()) @map("id")
-  fullAddress  String
-  streetNumber String
-  streetName   String
-  suburb       String
-  state        String
-  country      String
-  postcode     String
+  id           String  @id @default(uuid()) @map("id")
+  fullAddress  String? @map("full_address")
+  streetNumber String? @map("street_number")
+  streetName   String? @map("street_name")
+  suburb       String? @map("suburb")
+  state        String? @map("state")
+  city         String? @map("city")
+  country      String  @map("country")
+  postcode     String? @map("postcode") @db.VarChar(10)
+  lng          Float?  @map("lng")
+  lat          Float?  @map("lat")
 
   studentId String  @unique
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)

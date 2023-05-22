@@ -3,6 +3,7 @@ import { TutorService } from './tutor.service'
 import { TutorController } from './tutor.controller'
 
 @Module({
+  exports: [TutorService],
   controllers: [TutorController],
   providers: [TutorService],
 })
