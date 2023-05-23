@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
+import { Unique } from 'src/utils/decorator/unique.decorator'
+import CreateStudentAddressDto from './create-student-address.dto'
 import {
   IsEmail,
   IsNotEmpty,
@@ -8,8 +10,6 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator'
-import { Unique } from 'src/utils/decorator/unique.decorator'
-import CreateStudentAddressDto from './create-student-address.dto'
 
 export default class StudentDto {
   @ApiProperty({
