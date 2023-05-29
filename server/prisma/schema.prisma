@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id             String  @id @default(uuid())
-  appId          Int     @unique @map("app_id") @db.Int
+  appId          Int     @unique @map("app_id")
   email          String  @unique
   firstName      String  @map("first_name")
   lastName       String  @map("last_name")
@@ -20,8 +20,11 @@ model User {
   password       String
   avatar         String?
 
-  tutor   Tutor?
-  student Student?
+  tutor    Tutor?
+  student  Student?
+  blogs    Blog[]
+  Comment  Comment[]
+  BlogLike BlogLike[]
 
   @@map("user")
 }
@@ -60,11 +63,15 @@ model Profile {
   id                   String                 @id @default(uuid())
   bio                  String                 @db.VarChar(500)
   interestedCategories CategoriesInProfiles[]
+  experienceSkills     SkillSet[]             @relation("ExperienceSkills")
+  desiredSkills        SkillSet[]             @relation("DesiredSkills")
 
   tutorId   String?  @map("tutor_id")
   tutor     Tutor?   @relation(fields: [tutorId], references: [id], onDelete: Cascade)
   studentId String?  @map("student_id")
   student   Student? @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("profile")
 }
 
 model Category {
@@ -75,14 +82,88 @@ model Category {
   @@map("category")
 }
 
+model SkillSet {
+  id                String    @id @default(uuid())
+  title             String
+  experiencedPeriod String?   @map("experience_period")
+  experienceSkills  Profile[] @relation("ExperienceSkills")
+  desiredSkills     Profile[] @relation("DesiredSkills")
+
+  @@map("skil_set")
+}
+
 model CategoriesInProfiles {
+  profileId  String   @map("profile_id")
   profile    Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId  String
+  categoryId String   @map("category_id")
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId String
 
   @@id([profileId, categoryId])
   @@map("categories_in_profiles")
+}
+
+model Blog {
+  id        String   @id @default(uuid())
+  authorId  String   @unique @map("author_id")
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title     String
+  content   String   @db.VarChar(500)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  comments  Comment[]
+  blogLikes BlogLike[]
+  blogTags  TagsOnBlogs[]
+
+  @@map("blog")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  parentCommentId String? @map("parent_comment_id")
+  userId          String  @map("user_id")
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blogId          String  @map("blog_id")
+  blog            Blog    @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  parentComment Comment?  @relation("BlogComment", fields: [parentCommentId], references: [id])
+  childComment  Comment[] @relation("BlogComment")
+
+  @@map("comment")
+}
+
+model BlogLike {
+  id     String @id @default(uuid())
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blogId String @map("blog_id")
+  blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@map("blog_like")
+}
+
+model Tag {
+  id          String        @id @default(uuid())
+  title       String        @unique @db.VarChar(50)
+  tagsOnBlogs TagsOnBlogs[]
+
+  @@map("tag")
+}
+
+model TagsOnBlogs {
+  id String @id @default(uuid())
+
+  blogId String @map("blog_id")
+  blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  tagId  String @map("tag_id")
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@map("tags_on_blogs")
 }
 
 // Old schema
