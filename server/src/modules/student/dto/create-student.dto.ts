@@ -1,28 +1,25 @@
-import StudentDto from './student.dto'
-import { ApiProperty } from '@nestjs/swagger'
-import { Length } from 'class-validator'
-import { Match } from 'src/utils/decorator/match.decorator'
 import { CONSTANTS } from 'src/utils/constant/index'
+import { ApiProperty, OmitType } from '@nestjs/swagger'
+import { IsNotEmpty, IsNumber, Length } from 'class-validator'
+import UserDto from 'src/modules/user/dto/user.dto'
+import ProfileDto from 'src/modules/profile/dto/profile.dto'
 
-export class CreateStudentDto extends StudentDto {
+export class CreateStudentDto extends OmitType(UserDto, [
+  'createdAt',
+  'updatedAt',
+]) {
   @ApiProperty({
-    description: 'Code sent by email.',
-    example: '000000',
+    description: 'Display User ID (8 digits)',
+    example: '12345678',
   })
-  @Length(6, 6)
-  code: string
+  @IsNotEmpty()
+  @IsNumber()
+  @Length(CONSTANTS.USER_ID)
+  userId: number
 
   @ApiProperty({
-    description: 'User password',
-    example: 'asdf1234!A',
+    description: 'Student Profile',
+    type: ProfileDto,
   })
-  @Length(CONSTANTS.MIN_PASSWORD_LENGTH, CONSTANTS.MAX_PASSWORD_LENGTH)
-  password: string
-
-  @ApiProperty({
-    description: 'Password confirmation',
-    example: 'asdf1234!A',
-  })
-  @Match('password', { message: CONSTANTS.PASSWORD_MISMATCH })
-  confirmPassword: string
+  profile?: ProfileDto
 }

@@ -45,8 +45,8 @@ model EmailVerification {
 
 model Tutor {
   id     String @id @default(uuid())
-  userId String @unique @map("user_id")
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int    @unique @map("user_id")
+  user   User   @relation(fields: [userId], references: [appId], onDelete: Cascade)
 
   profile              Profile?
   weeklyAvailabilities WeeklyAvailability[]
@@ -59,8 +59,8 @@ model Tutor {
 
 model Student {
   id            String         @id @default(uuid())
-  userId        String         @unique @map("user_id")
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int            @unique @map("user_id")
+  user          User           @relation(fields: [userId], references: [appId], onDelete: Cascade)
   profile       Profile?
   paymentMethod PaymentMethod?
   bookings      Booking[]

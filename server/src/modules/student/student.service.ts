@@ -4,20 +4,14 @@ import { UpdateStudentDto } from './dto/update-student.dto'
 import GenericService from 'src/utils/generic-service'
 import { Prisma } from '@prisma/client'
 import HashService from 'src/utils/hash-service'
+import PrismaProvider from 'prisma/prisma-provider'
 
 @Injectable()
 export class StudentService extends GenericService {
-  findOneByEmail(email: string) {
-    return this.prisma.student.findUniqueOrThrow({
-      where: {
-        email,
-      },
-    })
-  }
 
-  async create (
+  async create(
     createStudentDto: CreateStudentDto,
-    prismaTransaction?: Prisma.TransactionClient,
+    prismaTransaction?: Prisma.TransactionClient
   ) {
     const hashedPassword = await HashService.hash(createStudentDto.password)
 
@@ -28,14 +22,12 @@ export class StudentService extends GenericService {
   private createStudentWithTransaction(
     createStudentDto: CreateStudentDto,
     hashedPassword: string,
-    prisma: Prisma.TransactionClient,
+    prisma: Prisma.TransactionClient
   ) {
     // const {,...studentDetails} = createStudentDto
-
     // return prisma.student.create({
     //   data: {
     //     ...studentDetails,
-
     //   }
     // })
   }

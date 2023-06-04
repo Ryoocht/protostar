@@ -1,10 +1,10 @@
-import { ApiProperty, OmitType } from '@nestjs/swagger'
-import { IsNotEmpty, IsString, Length } from 'class-validator'
-import ProfileDto from 'src/modules/profile/dto/profile.dto'
-import UserDto from 'src/modules/user/dto/user.dto'
 import { CONSTANTS } from 'src/utils/constant'
+import { ApiProperty, OmitType } from '@nestjs/swagger'
+import { IsNotEmpty, IsNumber, Length } from 'class-validator'
+import UserDto from 'src/modules/user/dto/user.dto'
+import ProfileDto from 'src/modules/profile/dto/profile.dto'
 
-export default class CreateTutorDto extends OmitType(UserDto, [
+export class CreateTutorDto extends OmitType(UserDto, [
   'createdAt',
   'updatedAt',
 ]) {
@@ -13,9 +13,9 @@ export default class CreateTutorDto extends OmitType(UserDto, [
     example: '12345678',
   })
   @IsNotEmpty()
-  @IsString()
+  @IsNumber()
   @Length(CONSTANTS.USER_ID)
-  userId: string
+  userId: number
 
   @ApiProperty({
     description: 'Tutor Profile',
