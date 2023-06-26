@@ -7,9 +7,9 @@ import { StudentService } from '../student/student.service'
 import { CreateTutorDto } from '../tutor/dto/create-tutor.dto'
 import { StudentLoginDto } from '../student/dto/student-login.dto'
 import { CreateStudentDto } from '../student/dto/create-student.dto'
+import { JwtTokenAccessEnum } from './types/auth-type.type'
 import GenericService from 'src/utils/generic-service'
 import HashService from 'src/utils/hash-service'
-import { JwtTokenAccessEnum } from './types/auth-type.type'
 
 @Injectable()
 export class AuthService extends GenericService {

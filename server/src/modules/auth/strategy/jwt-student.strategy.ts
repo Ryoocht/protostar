@@ -5,8 +5,8 @@ import { PassportStrategy } from '@nestjs/passport'
 import { Strategy } from 'passport-local'
 import { ExtractJwt } from 'passport-jwt'
 import { PrismaClient } from '@prisma/client'
-import { StudentService } from 'src/modules/student/student.service'
 import { JwtTokenAccessEnum } from '../types/auth-type.type'
+import { UserService } from 'src/modules/user/user.service'
 
 @Injectable()
 export class JwtStudentStrategy extends PassportStrategy(
@@ -17,7 +17,7 @@ export class JwtStudentStrategy extends PassportStrategy(
 
   constructor(
     configService: ConfigService,
-    private readonly studentService: StudentService
+    private readonly userService: UserService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -27,7 +27,7 @@ export class JwtStudentStrategy extends PassportStrategy(
   }
 
   async validate(payload: { id: string; type: JwtTokenAccessEnum }) {
-    const student = await this.studentService.findOneByEmail(payload.id)
+    const student = await this.userService.findOneByEmail(payload.id)
 
     if (!student || payload.type !== JwtTokenAccessEnum.STUDENT)
       throw new UnauthorizedException()

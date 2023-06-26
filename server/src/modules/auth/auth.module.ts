@@ -5,11 +5,14 @@ import { StudentModule } from '../student/student.module'
 import { TutorModule } from '../tutor/tutor.module'
 import { JwtModule } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
+import { UserModule } from '../user/user.module'
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService],
   imports: [
+    UserModule,
     StudentModule,
     TutorModule,
     JwtModule.registerAsync({
